@@ -1,0 +1,88 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome to GradeCalcz</h1>
+    <p>GradeCalcz lets you input point values for each student on an assignment and easily get percentage grades for each.</p>
+</div>
+
+<form>
+  <div class="form-group">
+        <div class="input-group">
+            <div class="col-md-8">
+                <h3>Assignment/Test Name:</h3>
+                <input type="text" class="form-control" id="assignmentNameInput" aria-describedby="assignmentName" placeholder="Enter Assignment Name">
+            </div>
+
+            <div class="col-md-4">
+                <h3>Total Points Allowed:</h3>
+                <input type="number" class="form-control" id="assignmentPointsInput" aria-describedby="assignmentPoints" placeholder="100">
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="input-group">
+        <div class="col-md-8">
+            <h3>Student Name</h3>
+        </div>
+
+        <div class="col-md-2">
+            <h3>Points</h3>
+        </div>
+
+        <div class="col-md-2">
+            <h3>Percentage</h3>
+        </div>
+    </div>
+
+    <div id="studentLines"></div>
+
+    <!-- <div id="addNewButton" class="col-md-2 offset-md-10 btn-padding">
+        <button type="button" class="btn btn-primary"><i class="fas fa-plus"></i> Add Student</button>
+    </div> -->
+</form>
+
+<script type="application/javascript">
+    $(document).ready(function() {
+        for(var lcv=1; lcv<=30; lcv++)
+        {
+            var inputGroupStart = "<div class='input-group student-line'>";
+            var nameContainer = "<div class='col-md-8'>";
+            var nameTextBox = "<input type='text' class='form-control student-name-'" + lcv + "'" + 
+                "aria-describedby='studentName" + lcv + "'" + "placeholder='Enter Student Name'>";
+            var endDiv = "</div>";
+
+            var pointsContainer = "<div class='col-md-2'>";
+            var pointsTextBox = "<input type='number' class='form-control student-points' id='studentPointsInput" + lcv + "'" + 
+                "aria-describedby='studentPoints" + lcv + "'" + "placeholder='100'>";
+
+            var percentageContainer = "<div class='col-md-2 text-center student-percentage-container'>";
+            var percentageLabel = "<label class='student-percentage' id='studentPercentage" + lcv + "'" 
+                + "aria-describedby='studentPercentage" + lcv + "'>100%</label>";
+
+            $("#studentLines").append(inputGroupStart + nameContainer + nameTextBox + endDiv + pointsContainer + 
+                pointsTextBox + endDiv + percentageContainer + percentageLabel + endDiv + endDiv);
+        }
+
+        $(".student-points").focusout(function(e) {
+            calculateClosestStudentPoints(e);
+        });
+
+        $(".student-points").keypress(function(e) {
+            if(e.which == 13) {
+                calculateClosestStudentPoints(e);
+            }
+        });
+
+        function calculateClosestStudentPoints(event) {
+            var points = $(event.currentTarget)[0].value;
+            var totalPoints = $('#assignmentPointsInput')[0].value != '' ? $('#assignmentPointsInput')[0].value : 100;
+            var closestPercentageLabel = $(event.currentTarget).closest('.student-line').children('.student-percentage-container').children('.student-percentage')[0];
+            var studentPercent = (points/totalPoints) * 100;
+            $(closestPercentageLabel).text(studentPercent.toFixed(2) + '%');
+        }; 
+    });
+</script>
